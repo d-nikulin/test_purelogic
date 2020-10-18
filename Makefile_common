@@ -1,0 +1,141 @@
+CC            = gcc
+CXX           = g++
+#CFLAGS        = -pipe -O2 -fPIC -Wall -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wredundant-decls -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference
+#CXXFLAGS      = -pipe -std=c++17 -O2 -fPIC -Wall -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wredundant-decls -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference
+CFLAGS        = -pipe -fsanitize=address,undefined -O2 -fPIC -Wall -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wredundant-decls -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference
+CXXFLAGS      = -pipe -fsanitize=address,undefined -std=c++17 -O2 -fPIC -Wall -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wredundant-decls -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference
+INCPATH       = -Iinclude -I. -I/usr/include/libbson-1.0
+LINK          = g++
+LFLAGS        = -Wl,-O1 -shared -Wl,-soname,libcommon.so.1
+#LIBS          = $(SUBLIBS) -lpthread -lrt -lbson1.0
+LIBS          = $(SUBLIBS) -lasan -lubsan -lpthread -lrt -lbson-1.0
+AR            = ar cqs
+RANLIB        = 
+TAR           = tar -cf
+COMPRESS      = gzip -9f
+COPY          = cp -f
+SED           = sed
+COPY_FILE     = $(COPY)
+COPY_DIR      = $(COPY) -r
+STRIP         = strip
+INSTALL_FILE  = install -m 644 -p
+INSTALL_DIR   = $(COPY_DIR)
+INSTALL_PROGRAM = install -m 755 -p
+DEL_FILE      = rm -f
+SYMLINK       = ln -f -s
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+####### Output directory
+
+OBJDIR   = ./
+SRCDIR = common/
+
+####### Files
+
+
+SOURCES       = $(SRCDIR)json/bson_parser.c \
+				$(SRCDIR)settings/abstract_settings.c \
+				$(SRCDIR)settings/settings_parser.c \
+				$(SRCDIR)tlv_protocol/tlv_protocol.c \
+				$(SRCDIR)tlv_transfer/tlv_thread.c \
+				$(SRCDIR)tlv_transfer/tlv_srv_connections.cpp \
+				$(SRCDIR)tlv_transfer/tlv_srv.c \
+				$(SRCDIR)tlv_transfer/tlv_cli.c 
+
+OBJECTS       = $(OBJDIR)bson_parser.o \
+				$(OBJDIR)abstract_settings.o \
+				$(OBJDIR)settings_parser.o \
+				$(OBJDIR)tlv_protocol.o \
+				$(OBJDIR)tlv_thread.o \
+				$(OBJDIR)tlv_srv_connections.o \
+				$(OBJDIR)tlv_srv.o \
+				$(OBJDIR)tlv_cli.o  
+
+DESTDIR       = bin/lib/
+
+TARGET        = libcommon.so.1.0.0
+TARGETA       = libcommon.a
+TARGETD       = libcommon.so.1.0.0
+TARGET0       = libcommon.so
+TARGET1       = libcommon.so.1
+TARGET2       = libtcommon.so.1.0
+
+
+first: all
+
+all: Makefile_common  $(DESTDIR)$(TARGET)
+
+$(DESTDIR)$(TARGET):  $(OBJECTS) $(SUBLIBS) $(OBJCOMP)  
+	@$(CHK_DIR_EXISTS) $(DESTDIR) || $(MKDIR) $(DESTDIR)
+	-$(DEL_FILE) $(TARGET) $(TARGET0) $(TARGET1) $(TARGET2)
+	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS) $(OBJCOMP)
+	-ln -s $(TARGET) $(TARGET0)
+	-ln -s $(TARGET) $(TARGET1)
+	-ln -s $(TARGET) $(TARGET2)
+	-$(DEL_FILE) $(DESTDIR)$(TARGET)
+	-$(DEL_FILE) $(DESTDIR)$(TARGET0)
+	-$(DEL_FILE) $(DESTDIR)$(TARGET1)
+	-$(DEL_FILE) $(DESTDIR)$(TARGET2)
+	-$(MOVE) $(TARGET) $(TARGET0) $(TARGET1) $(TARGET2) $(DESTDIR)
+
+
+staticlib: $(TARGETA)
+
+$(TARGETA):  $(OBJECTS) $(OBJCOMP) 
+	-$(DEL_FILE) $(TARGETA) 
+	$(AR) $(TARGETA) $(OBJECTS)
+
+
+
+clean:compiler_clean 
+	-$(DEL_FILE) $(OBJECTS)
+
+
+####### Sub-libraries
+
+distclean: clean
+	-$(DEL_FILE) $(TARGET) 
+	-$(DEL_FILE) Makefile
+
+
+check: first
+
+compiler_clean: 
+
+####### Compile
+
+bson_parser.o:  $(SRCDIR)json/bson_parser.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)bson_parser.o $(SRCDIR)json/bson_parser.c
+
+abstract_settings.o:  $(SRCDIR)settings/abstract_settings.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)abstract_settings.o $(SRCDIR)settings/abstract_settings.c
+
+settings_parser.o:  $(SRCDIR)settings/settings_parser.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)settings_parser.o $(SRCDIR)settings/settings_parser.c
+
+tlv_protocol.o:  $(SRCDIR)tlv_protocol/tlv_protocol.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)tlv_protocol.o $(SRCDIR)tlv_protocol/tlv_protocol.c
+
+tlv_thread.o:  $(SRCDIR)tlv_transfer/tlv_thread.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)tlv_thread.o $(SRCDIR)tlv_transfer/tlv_thread.c
+
+tlv_srv_connections.o: $(SRCDIR)tlv_transfer/tlv_srv_connections.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -c -o $(OBJDIR)tlv_srv_connections.o $(SRCDIR)tlv_transfer/tlv_srv_connections.cpp
+
+tlv_srv.o: $(SRCDIR)tlv_transfer/tlv_srv.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)tlv_srv.o $(SRCDIR)tlv_transfer/tlv_srv.c
+
+tlv_cli.o: $(SRCDIR)tlv_transfer/tlv_cli.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(OBJDIR)tlv_cli.o $(SRCDIR)tlv_transfer/tlv_cli.c
+
+####### Install
+
+install:   FORCE
+
+uninstall:   FORCE
+
+FORCE:
+

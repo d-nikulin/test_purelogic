@@ -1,0 +1,97 @@
+CC            = gcc
+CXX           = g++
+CFLAGS        = -pipe -O2 -fsanitize=address,undefined -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wall -W -D_REENTRANT
+CXXFLAGS      = -pipe -O2 -fsanitize=address,undefined -std=c++17 -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wall -W -D_REENTRANT
+#CFLAGS        = -pipe -O2 -Wextra -Wno-unused-parameter -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wall -W -D_REENTRANT
+#CXXFLAGS      = -pipe -O2 -Wextra -Wno-unused-parameter -std=c++17 -Wsign-conversion -Wswitch-default -Wswitch-enum -Werror -Wall -W -D_REENTRANT
+INCPATH       = -Iinclude -I.
+LINK          = g++
+LFLAGS        = -Wl,-O1 -Lbin/lib
+#LIBS          = $(SUBLIBS) -lpthread -lcrypto -lrt -lcommon
+LIBS          = $(SUBLIBS) -lasan -lubsan -lpthread -lcrypto -lrt -lcommon 
+AR            = ar cqs
+RANLIB        = 
+TAR           = tar -cf
+COMPRESS      = gzip -9f
+COPY          = cp -f
+SED           = sed
+COPY_FILE     = $(COPY)
+COPY_DIR      = $(COPY) -r
+STRIP         = strip
+INSTALL_FILE  = install -m 644 -p
+INSTALL_DIR   = $(COPY_DIR)
+INSTALL_PROGRAM = install -m 755 -p
+DEL_FILE      = rm -f
+SYMLINK       = ln -f -s
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+####### Output directory
+
+OBJECTS_DIR   = ./
+
+####### Files
+
+SRCDIR = cli/
+
+SOURCES       = $(SRCDIR)Cli.cpp \
+				$(SRCDIR)cli_settings.c \
+				$(SRCDIR)main.cpp
+
+
+OBJECTS       = $(SRCDIR)Cli.o \
+				$(SRCDIR)cli_settings.o \
+				$(SRCDIR)main.o 
+
+DESTDIR       = bin/
+
+TARGET        = $(DESTDIR)cli
+
+first: all
+
+all: Makefile_cli $(TARGET)
+
+$(TARGET):  $(OBJECTS)  
+	@$(CHK_DIR_EXISTS) $(DESTDIR) || $(MKDIR) $(DESTDIR) 
+	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
+
+
+clean:compiler_clean 
+	-$(DEL_FILE) $(OBJECTS)
+
+
+####### Sub-libraries
+
+distclean: clean
+	-$(DEL_FILE) $(TARGET) 
+	-$(DEL_FILE) Makefile
+
+
+check: first
+
+compiler_clean: 
+
+####### Compile
+
+
+$(SRCDIR)Cli.o: $(SRCDIR)Cli.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -c -o $(SRCDIR)Cli.o $(SRCDIR)Cli.cpp
+
+$(SRCDIR)cli_settings.o: $(SRCDIR)cli_settings.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -c -o $(SRCDIR)cli_settings.o $(SRCDIR)cli_settings.c
+
+$(SRCDIR)main.o: $(SRCDIR)main.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -c -o $(SRCDIR)main.o $(SRCDIR)main.cpp
+
+
+
+####### Install
+
+install:   FORCE
+
+uninstall:   FORCE
+
+FORCE:
+
