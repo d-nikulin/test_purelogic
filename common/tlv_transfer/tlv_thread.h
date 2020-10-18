@@ -1,4 +1,4 @@
-// (C)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+// (C)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #ifndef TLV_THREAD_H_
 #define TLV_THREAD_H_

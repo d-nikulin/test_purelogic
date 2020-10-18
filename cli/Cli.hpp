@@ -1,10 +1,10 @@
-// (C)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+// (C)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #pragma once
 
 #include "common/tlv_protocol/tlv_protocol.h"
 #include "common/tlv_transfer/tlv_cli.h"
-#include "cli_settings.h"
+#include "cli/cli_settings.h"
 
 
 class Cli{
@@ -18,7 +18,6 @@ public:
 
     bool regClient(int fd);
     bool unregClient(int fd);
-    //void request(int fd, TlvMessage* msg);
 
     void setConnected();
     void setDisconnected();
@@ -35,7 +34,6 @@ private:
     unsigned request_id;
 
     void initTlvCliHandlers();
-    //void request(TlvMessage* msg);
     ssize_t hash(const char* filename, char* hash);
 };
 

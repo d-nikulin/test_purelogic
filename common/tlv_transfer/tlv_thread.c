@@ -1,6 +1,6 @@
-// (C)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+// (C)2020, Никулин Д.А., dan-gubkin@mail.ru
 
-#include "tlv_thread.h"
+#include "common/tlv_transfer/tlv_thread.h"
 
 #include <pthread.h>
 #include <stdlib.h>

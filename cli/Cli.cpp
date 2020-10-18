@@ -1,7 +1,8 @@
-//(С)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+//(С)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #include "common/constants.h"
 #include "common/tlv_protocol/tlv_protocol.h"
+#include "cli/cli_settings.h"
 #include "cli/Cli.hpp"
 
 #include <openssl/sha.h>
@@ -43,7 +44,7 @@ int signal_disconnected(const char* id){
 
 Cli::Cli(int argc, const char** argv){
     init_cli_settings( &settings );
-    settings.parse(&settings, argc>2 ? argv[2] : "./cli.json");
+    settings.parse(&settings, argc>1 ? argv[1] : "./cli.json");
     initTlvCliHandlers();
     cli = NULL;
     connected = false;

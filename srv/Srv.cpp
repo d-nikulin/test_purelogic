@@ -1,4 +1,4 @@
-//(С)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+//(С)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #include "common/constants.h"
 #include "common/json/bson_parser.h"
@@ -247,7 +247,7 @@ bool Srv::save(){
         printf("error saving hash collection: serialize fault\n");
         return false;
     }
-    const char* filename = "./cache_dump.json";
+    const char* filename = settings.dump_name;
     int fd = open(filename, O_WRONLY|O_CREAT, 0777);
     if (fd<0){
         printf("error saving hash collection (%d) %s\n", errno, strerror(errno));
@@ -275,7 +275,7 @@ bool Srv::save(){
 
 
 bool Srv::load(){
-    const char* filename = "./cache_dump.json";
+    const char* filename = settings.dump_name;
     int fd = open(filename, O_RDONLY);
     if (fd<0){
         printf("error loading hash collection (%d) %s\n", errno, strerror(errno));

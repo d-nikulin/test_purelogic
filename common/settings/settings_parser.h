@@ -1,4 +1,4 @@
-// (C) 2020, d.nikulin@sk-shd.ru
+// (C) 2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #ifndef SETTINGS_PARSER_H_
 #define SETTINGS_PARSER_H_

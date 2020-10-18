@@ -1,10 +1,10 @@
-// (C)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+// (C)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #ifndef TLV_CLI_H_
 #define TLV_CLI_H_
 
 
-#include "tlv_types.h"
+#include "common/tlv_transfer/tlv_types.h"
 
 #include <stdio.h>
 #include <stdbool.h>

@@ -1,8 +1,8 @@
-// (C)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+// (C)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #include "common/settings/abstract_settings.h"
 #include "common/settings/settings_parser.h"
-#include "srv_settings.h"
+#include "srv/srv_settings.h"
 
 #include <fcntl.h>
 #include <errno.h>

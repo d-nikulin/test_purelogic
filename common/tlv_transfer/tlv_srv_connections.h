@@ -1,10 +1,10 @@
-// (C)2020, Никулин Д.А., d.nikulin@sk-shd.ru
+// (C)2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #ifndef TLV_SRV_CONNECTIONS_H_
 #define TLV_SRV_CONNECTIONS_H_
 
 
-#include "tlv_thread.h"
+#include "common/tlv_transfer/tlv_thread.h"
 
 
 #ifdef __cplusplus

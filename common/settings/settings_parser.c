@@ -1,4 +1,4 @@
-// (C) 2020, d.nikulin@sk-shd.ru
+// (C) 2020, Никулин Д.А., dan-gubkin@mail.ru
 
 #include "common/json/bson_parser.h"
 #include "common/settings/settings_parser.h"
